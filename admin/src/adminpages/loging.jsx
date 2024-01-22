@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Profile from './Profile';
 import Dashboard from './Dashboard';
-import { useAuth } from './AuthContext'; 
+import { useAuth } from './AuthContext';
+import myImage from '../sarbini_black.png'; 
 
 function Login() {
   const { setToken } = useAuth(); 
@@ -56,13 +57,10 @@ function Login() {
     set(e.target.value);
   };
 
-
-
-
   return (
     <div className='bigdiv_logo'>
         <div className='div1_login'>
-            <img className='img_logo'  src="https://cdn.discordapp.com/attachments/1191780458074230886/1192873302625099827/Capture_d_ecran_2024-01-04_161046-removebg-preview.png?ex=65aaa8d5&is=659833d5&hm=7388a94ef9dce62cc8861b6718d02c6d276e8dff82567fe09bfcc431654177be&" alt="" />
+            <img className='img_logo'  src={myImage} alt="" />
         </div>
         <div><h1 className=''>hdgdgdgdg</h1></div>
         <div className='div2_login'>
@@ -72,11 +70,10 @@ function Login() {
               {errorPseu&&<Input  size="large" onChange={(e)=>{handleText(setPseudo,e)}}  className='input_login' placeholder="Pseudo" prefix={<UserOutlined />} />}
               {!errorPass&&<Input status='error' onClick={()=>{setErrorPass(true)}} size="large" onChange={(e)=>{handleText(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
               {errorPass&&<Input  size="large" onChange={(e)=>{handleText(setPassword,e)}} className='input_login' type='password' placeholder="Pasword" />}
-            <Flex className='flex_login'   gap="small" wrap="wrap">
+            <Flex className='flex_login' gap="small" wrap="wrap">
             <Button className='button_login' onClick={()=>{verif() ,console.log("onclick admin ",admin);
               }}>Login</Button>
-
-            </Flex>
+            </Flex> 
         </div>
         {!show &&(<div>
           <Dashboard id={Id} />

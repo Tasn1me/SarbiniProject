@@ -366,6 +366,7 @@ console.log("regions",regions);
 	<h3 className="latest-registration-users3">Yearly checkout</h3>
       <Line data={Dataa} options={optionss} />
     </div>
+	<MapComponent/>
 		<Footer/>
       			</section>
       			<header className="header">
