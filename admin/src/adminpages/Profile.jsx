@@ -1,6 +1,8 @@
 import React, { useEffect, useState, KeyboardEvent, ChangeEvent } from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom"
+import myImage from '../sarbini_black.png'; 
+
 
 const Profile = () => {
   const [admin, setAdmin] = useState({});
@@ -10,7 +12,7 @@ const Profile = () => {
   const [userPseudo, setUserPseudo] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userPassword1, setUserPassword1] = useState('');
-  const id=localStorage.getItem('id');
+  const id=localStorage.getItem('id');   
   const navigate=useNavigate();
 
   useEffect(() => {
@@ -71,7 +73,7 @@ const Profile = () => {
     };
     
     
-    const handleKeyPress = async (event: KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyPress = async (event) => {
       if (event.key === 'Enter') {
         setIsEditing(false);
         updateCont()
@@ -83,18 +85,22 @@ const Profile = () => {
       setIsEditing(true);
     };
     
-    
-    
+   
+return(
+   <div className="card">
+  <p className="grid-child-post">My Profile</p>
+  
+    <br /><br /><br />
+    <div className="gridd">
+      {isEditing ? (
+              <div>
+              <div className="commentprofile">Press "Enter" To Update Your Profile</div>
+              </div>
 
-
-  return(
-<div className="container">
-  <div className="card">
-    <div className="returnToDashboard" onClick={()=>{navigate("/Dashboard")}}>return to Dashboard</div>
-  <p className="grid-child-posts">My Profile</p>
-    <div>
-    <img src="https://lh3.googleusercontent.com/oUUiPB9sq3ACq4bUaRmo8pgvC4FUpRRrQKcGIBSOsafawZfRpF1vruFeYt6uCfL6wGDQyvOi6Ez9Bpf1Fb7APKjIyVsft7FLGR6QqdRFTiceNQBm1In9aZyrXp33cZi9pUNqjHASdA=s170-no" alt="Person" className="card__image" />
-    </div><br /><br /><br />
+            ) : (<div>
+              <div className="commentprofile">Double Click To Update Your Profile</div>
+              </div>
+            )}
         <div className="grid-container">
           <div className="grid-child-posts">
             Name:
@@ -145,7 +151,7 @@ const Profile = () => {
               <input
                className="inputProfile"
                placeholder="update Password..."
-                type="text"
+                type="password"
                 name="userPassword"
                 value={userPassword1}
                 onChange={(e)=>{setUserPassword1(e.target.value)}}
@@ -155,7 +161,7 @@ const Profile = () => {
               <input
                className="inputProfile"
                placeholder="Confirm Password..."
-                type="text"
+                type="password"
                 name="userPassword"
                 value={userPassword}
                 onChange={(e)=>{setUserPassword(e.target.value)}}
@@ -173,18 +179,9 @@ const Profile = () => {
 
           </div>
         </div>
-        {isEditing ? (
-              <div>
-              <div className="commentprofile">Press "Enter" To Update Your Profile</div>
-              </div>
-
-            ) : (<div>
-              <div className="commentprofile">Double Click To Update Your Profile</div>
-              </div>
-            )}
-      </div>
+       
+      </div></div>
       
-    </div>
   );
 };
 

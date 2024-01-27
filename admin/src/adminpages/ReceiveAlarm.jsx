@@ -3,9 +3,9 @@ import axios from 'axios'
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Menu, Space } from 'antd';
 import { Input } from 'antd';
-import { SearchOutlined ,DeleteOutlined ,EditOutlined } from '@ant-design/icons';
+import { SearchOutlined ,DeleteOutlined ,MailOutlined } from '@ant-design/icons';
 import { Button, Flex, Tooltip } from 'antd';
-
+import { io } from "socket.io-client";
 
 function ReceivedAlarms() {
     const[users,setUsers]=useState([])
@@ -208,7 +208,7 @@ function ReceivedAlarms() {
         </div>
         <div className='div_5colla'>
         <Input placeholder="Select By Name" onChange={(e)=>{hundletext(setContname,e)}} className='input1_colla' /> 
-        <Button type="primary" shape="circle" onClick={()=>{searchbyname(contnames);setShowserach(2) }} className='btn1_colla' icon={<SearchOutlined />} />
+        <Button type="primary" shape="circle" onClick={()=>{searchbyname(contnames);setShowserach(2) }} className='btn1_colla' icon={<SearchOutlined  />} />
         </div>
         
       </div>
@@ -245,7 +245,7 @@ function ReceivedAlarms() {
                 <td></td>
                 <td className='td2_colla'>{el.createdAt}</td>
                 <td></td>
-                <td className='td2_colla'> <EditOutlined className='icon2_colla' onClick={()=>{ }} /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
+                <td className='td2_colla'> <MailOutlined className='icon2_colla'  /> <DeleteOutlined onClick={()=>{deleteuser(el.id)}} className='icon3_colla' /> </td>
                 </tr>
                     <tr>
                         <td colSpan="12">

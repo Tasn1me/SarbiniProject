@@ -22,6 +22,7 @@ app.use(express.static(__dirname + "/../client/dist"));
 app.use(cors())
 app.post('/api/sarbini/signup',authController.signUp)
 app.post('/api/sarbini/signin',authController.signIn)
+app.post('/api/sarbini/adminSignUp',authController.adminSignUp)
 app.post('/api/sarbini/adminSignIn',authController.adminSignIn)
 app.use("/api/sarbini",usersRoute)
 app.use("/api/sarbini",ordersRouter)
@@ -31,7 +32,7 @@ app.use("/api/sarbini",categoryRoute)
 app.use("/api/sarbini",PaymentController)
 
 
-
+ 
 
 app.listen(PORT, function () {
   console.log("listening on port 3000!");

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { AddUser} = require('./users.controller');
+const { AddAdmin} = require('./admin.controller');
 const {Users,Admin}=require('../database-Sequelize/index')
 
 
@@ -23,6 +24,23 @@ const signUp = async (req, res) => {
       user_password: hashedPassword}
      
       AddUser({ body: newUser }, res);
+  } catch (error) {
+    res.status(500).json({ error: 'Error' });
+  }
+};
+
+const adminSignUp = async (req, res) => {
+  const { admin_name, admin_Pseudo, admin_password} = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(admin_password, 10);
+
+    const newAdmin = {
+      admin_name,
+      admin_Pseudo,
+      admin_password: hashedPassword}
+     
+      AddAdmin({ body: newAdmin }, res);
   } catch (error) {
     res.status(500).json({ error: 'Error' });
   }
@@ -87,7 +105,7 @@ const signIn = async (req, res) => {
     }
   } catch (error) {
     console.error('Error during sign-in:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error');}}
 
 const adminGenerateToken = (userId, userName) => {
   const expiresIn = 60 * 60 * 24;
@@ -114,7 +132,7 @@ const adminSignIn = async (req, res) => {
       res.status(200).json(result.dataValues);
     } else {
       res.status(401).json({ error: "Password mismatch" });
-    }
+    } 
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
@@ -124,5 +142,5 @@ const adminSignIn = async (req, res) => {
 module.exports = {
   signUp,
   signIn,
-  adminSignIn
+  adminSignIn,adminSignUp
 };

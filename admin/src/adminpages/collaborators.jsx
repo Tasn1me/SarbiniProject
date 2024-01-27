@@ -5,7 +5,9 @@ import { Dropdown, Menu, Space } from 'antd';
 import { Input } from 'antd';
 import { SearchOutlined ,DeleteOutlined ,EditOutlined } from '@ant-design/icons';
 import { Button, Flex, Tooltip } from 'antd';
-
+import MapComponent from "./Mapp"
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 function Collaborators() {
     const[users,setUsers]=useState([])
@@ -20,12 +22,16 @@ function Collaborators() {
     const[showsearch,setShowserach]=useState(0)
     const[serach,setSearch]=useState([])
     const [isPopupVisible, setPopupVisible] = useState(false);
+    const [isPopupVisible1, setPopupVisible1] = useState(false); 
+    const [isPopupVisible2, setPopupVisible2] = useState(false);
     const[location,setLocation]=useState("")
     const[name,setName]=useState("")
     const[pseudo,setPseudo]=useState("")
     const[phone,setPhone]=useState("")
     const[password,setPassword]=useState("")
     const[password1,setPassword1]=useState("")
+    const [visibleMaps, setVisibleMaps] = useState({});
+
 
     const handleButtonClick = () => { 
       setPopupVisible(true);
@@ -35,7 +41,26 @@ function Collaborators() {
      const handleClosePopup = () => {
        setPopupVisible(false);
      };
+     const handleButtonClick1 = () => { 
+      setPopupVisible1(!isPopupVisible);
+    };
+    console.log(isPopupVisible1);
+   
+     const handleClosePopup1 = () => {
+       setPopupVisible1(false);
+     };
+     const handleButtonClick2 = () => { 
+      setPopupVisible2(!isPopupVisible2);
+    };
+    console.log(isPopupVisible2);
+   
+     const handleClosePopup2 = () => {
+       setPopupVisible2(false);
+     };
 
+const subscription=(text)=>(
+  new Date(text.toString())
+)
 
   console.log("pseudo",npseudo);
 
@@ -45,6 +70,8 @@ function Collaborators() {
         user_phone:nphone,
         user_location:nlocation,
     }
+console.log(serach);
+    
 
     useEffect(()=>{
         getcontrollers()
@@ -94,7 +121,8 @@ function Collaborators() {
         user_Pseudo: pseudo,
         user_password: password,
         user_role :"controller",
-        user_location : location}).then((result)=>{console.log(result)})
+        user_location : location ,
+        createdAt: new Date() }).then((result)=>{console.log(result)})
        .catch((err)=>console.log(err))}
 
       const addcont=()=>{
@@ -173,7 +201,7 @@ function Collaborators() {
             return serach.map(el=>(
                 <>
                    <tr>
-                <td className='td2_colla' >{editingUserId===el.id?(<Input   placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
+                <td className='td2_colla'>{editingUserId===el.id?(<Input placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):(<div >{el.user_location}</div>)}</td>
                 <td></td>
                 <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
                 <td></td>
@@ -194,6 +222,8 @@ function Collaborators() {
             ))
         }
 
+
+
     const searchbyloc=(loc)=>{
         let data=users.filter((item)=>{
             console.log(loc);
@@ -204,11 +234,11 @@ function Collaborators() {
             }
             console.log(serach);
        return serach.map(el=>(
-            <>
-           <tr>
+            <div>
+           <tr >
                 <td className='td2_colla' >{editingUserId===el.id?(<Input   placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
-                <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
+                <td ></td>
+                <td className='td2_colla'  >{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):<div onClick={()=>handleButtonClick1()}>{el.user_name}</div>}</td>
                 <td></td>
                 <td className='td2_colla'>{editingUserId===el.id? (<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
                 <td></td>
@@ -223,7 +253,7 @@ function Collaborators() {
                 <hr />
             </td>
         </tr>        
-            </>
+            </div>
         ))
     }      
 
@@ -248,11 +278,9 @@ function Collaborators() {
         <Input placeholder="Select By Name" onChange={(e)=>{hundletext(setContname,e)}} className='input1_colla' /> 
         <Button type="primary" shape="circle" onClick={()=>{searchbyname(contnames);setShowserach(2) }} className='btn1_colla' icon={<SearchOutlined />} />
         </div>
-        <div>
-        
-              <Button className='icon_colla0' onClick={()=>{handleButtonClick()}}>Add Collaborator     +</Button>
-            
-        </div>
+         <div>
+        <Button className='icon_colla0' onClick={()=>{handleButtonClick()}}>Add Collaborator     +</Button>
+         </div>
       </div>
       <div>
         <table className='table_colla'>
@@ -275,11 +303,13 @@ function Collaborators() {
                     </td>
                 </tr>              
                 {showsearch==0&&users.map(el=>(
-                    <>
+                    <> 
                     <tr>
-                <td className='td2_colla' >{editingUserId===el.id?(<Input   placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):el.user_location}</td>
+                <td className='td2_colla' >{editingUserId===el.id?(<Input placeholder="new location" onChange={(e)=>hundletext(setNlocation,e,(el.user_location))}/>):<div data-toggle="tooltip" data-placement="bottom" title="See Location" onClick={()=>{handleButtonClick1()}}>{el.user_location}</div>}</td>
+                {isPopupVisible1 && (<div id="mapp" onDoubleClick={()=>{handleClosePopup1()}}>
+                 <MapComponent el={el}/></div>)}
                 <td></td>
-                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):el.user_name}</td>
+                <td className='td2_colla'>{editingUserId===el.id?  (<Input placeholder="new name" onChange={(e)=>hundletext(setNname,e,(el.user_name))} />):<div data-toggle="tooltip" data-placement="bottom" title="See Subscription Details" onClick={()=>{handleButtonClick2()}}>{el.user_name}</div>}</td>
                 <td></td>
                 <td className='td2_colla'>{editingUserId===el.id? (<Input placeholder="new pseudo" onChange={(e)=>hundletext(setNpseudo,e,(el.user_Pseudo))}/>):el.user_Pseudo}</td>
                 <td></td>
@@ -291,9 +321,63 @@ function Collaborators() {
                 </tr>
                     <tr>
                         <td colSpan="12">
-                        <hr />
+                        <hr/>
                     </td>
-                </tr>        
+                </tr> 
+                
+            {isPopupVisible2 && <div className="bigdivpopup"><div className="containerpopup">
+            <Button className="buttonpopup" onClick={()=>{handleClosePopup2()}}>X</Button>
+            <h1 className="h1popup">Add New Collaborator</h1>
+            <div className="divvpopup">
+              <div>
+            <h2>Collab Full Name:</h2>
+            </div>
+            <div>
+            <h2>{el.user_name}</h2>
+           </div>
+            </div>
+            <div className="divvpopup">
+            <div>
+            <h2>Collab Pseudo:</h2>
+            </div>
+            <div>
+            <h2>{el.user_Pseudo}</h2>
+            </div>
+            </div>
+            <div className="divvpopup">
+            <div>
+            <h2>Collab Location Adress:</h2>
+            </div>
+            <div>
+            <h2>{el.user_location}</h2>
+            </div>
+            </div>
+            <div className="divvpopup">
+            <div>
+            <h2>Collab Phone Number:</h2>
+            </div>
+            <div>
+            <h2>{el.user_phone}</h2>
+            </div>
+            </div>
+            <div className="divvpopup">
+            <div>
+            <h2>Collab Start: </h2>
+            </div>
+            <div>
+            <h2>{el.createdAt}</h2>
+            </div>
+            </div>
+            </div>
+            <div className="divvpopup">
+            <div>
+            <h2>Collab Expiration:</h2>
+            </div>
+            <div>
+            <h2></h2>
+            </div>
+            </div>
+            </div>}           
                     </>
                 ))}
                 {showsearch==1&&searchbyloc()}
@@ -324,16 +408,23 @@ function Collaborators() {
             <div className="divvpopup">
             <div>
             <h2>ADD Password</h2>
-            <Input className="inputpopup" placeholder="Enter Pssword.." onChange={(e)=>setPassword(e.target.value)}/></div>
+            <Input.Password className="inputpopup" placeholder="Enter Pssword.." onChange={(e)=>setPassword(e.target.value)}/></div>
             <div>
             <h2>Confirm password</h2>
-            <Input className="inputpopup" placeholder="Enter Pssword Confirmation.." onChange={(e)=>setPassword1(e.target.value)}/></div>
+            <Input.Password  className="inputpopup" placeholder="Enter Pssword Confirmation.." onChange={(e)=>setPassword1(e.target.value)}/></div>
             </div>
-            
+ 
             
             <Button className="buttonpopup1" onClick={()=>{addcont()}}>Add +</Button>
             </div></div>}      
-    </div>
+
+  
+
+ </div>
+
+
+
+
   )
 }
           

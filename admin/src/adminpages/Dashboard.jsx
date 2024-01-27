@@ -5,24 +5,18 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaArrowUp } from "react-icons/fa";
 import { Footer } from './Footer';
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Slider from '@mui/material/Slider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { BarChart } from '@mui/x-charts/BarChart';
 import axios from "axios"
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Regions from "./Regions"
 import { Bar } from 'react-chartjs-2';
-// import 'chartjs-adapter-react';
 import { Chart, registerables } from 'chart.js';
 import{ useNavigate} from "react-router-dom";
 import { Line } from 'react-chartjs-2';
-import {logout} from './AuthContext'
-import MapComponent from "./Map"
-
-
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import Clock from "./Clock"
+import "leaflet-control-geocoder/dist/Control.Geocoder.css"
+import "leaflet-control-geocoder/dist/Control.Geocoder.js"
 const DarkDashboard = () => {
   	const [frameDropdownAnchorEl, setFrameDropdownAnchorEl] = useState(null);
   	const frameDropdownOpen = Boolean(frameDropdownAnchorEl);
@@ -36,6 +30,12 @@ const DarkDashboard = () => {
 	const navigate=useNavigate()
 	Chart.register(...registerables);
 	 
+
+
+const popularity=()=>(
+	users.length*(100/70000).toFixed(2)
+)
+
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -91,16 +91,30 @@ useEffect(() => {
   
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    const intervalId = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % users.length);
-    }, 9000); 
+    }; 
     
   }, []);
 
   const getLast5UniqueValues = (arr,n) => {
-	const uniqueValues = [...new Set(arr.reverse())];
-	return uniqueValues.slice(0, Math.min(n, uniqueValues.length));
-  };
+	const reversedArray = arr.slice().reverse();
+	const uniqueLocations = new Set();
+	const result = [];
+  
+	for (const item of reversedArray) {
+	  if (!uniqueLocations.has(item.user_location)) {
+		result.push(item);
+		uniqueLocations.add(item.user_location);
+	  }
+  
+	  if (result.length === n) {
+		break;
+	  }
+	}
+  
+	return result;
+  }
   const LastUniqueValues=getLast5UniqueValues(users,5)
   const LastUniqueValues6=getLast5UniqueValues(users,6)
   console.log("unique",LastUniqueValues);
@@ -125,10 +139,6 @@ const filt = (regions) => {
   };
  
   const filteredRegions = filt(regions);
-  
-
-
-
   const chartData = {
     labels: LastUniqueValues.map((el)=>el.user_location),
 	datasets: [{
@@ -271,14 +281,17 @@ console.log("regions",regions);
   	return (
     		<div className="dark-dashboard">
       			<section className="content">
-        				<div className="horizontal-line" />
+				  <img className="top" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2Fdownload-wallpapers-red-world-map-earth-geographic-map-continents-ocean-art-world--667658713486342772%2F&psig=AOvVaw2y8PINgvmW0WYUyGGziXFJ&ust=1706337154863000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOiuwLa3-oMDFQAAAAAdAAAAABAD" alt="" />
+        				<div className="horizontal-line" /> 
+						<h2 className="time-wise-users">Welcome , {admin.admin_Pseudo}</h2> 
+						<Clock/>
         				<div className="divider" />
         				<div className="divider1" />
 						<div className="divider2" />
         				<div className="divider3" />
         				<div className="hey-admin">
           					<div className="divider4" />
-          					 <h2 className="time-wise-users">Welcome , {admin.admin_Pseudo}</h2> 
+          					
           					<div className="latest-registration-users-parent">
             						<div className="latest-registration-users">
               							<div className="latest-registration-users-group">
@@ -317,12 +330,12 @@ console.log("regions",regions);
               							<div className="usa"></div>
             						</div>
           					</div>
-							
+							<h3 className="latest-registration-users2">Latest Registrations</h3>
           					<div className="chart">
-								<h3 className="latest-registration-users2">Latest Registrations</h3>
+								
 							  <div className='chartt'>
 							  
-      <Bar data={chartData} options={chartOptions} />
+      <Bar className="charr" data={chartData} options={chartOptions} />
     </div>
           					</div>
 
@@ -353,23 +366,24 @@ console.log("regions",regions);
               							</div>
         			
 										  <div className='charttt'>
-										  <h3 className="latest-registration-users1">Registrations Per Week</h3>
+										  <h3 className="latest-registration-users6">Registrations Per Week</h3>
       <Bar data={Data} options={Options} />
     </div>
         				<div className="users-per-country"><br /><br /><br /><br />
-						<h3 className="latest-registration-users2">Subscripions Across Regions</h3>
+						
           					
-<Regions values={LastUniqueValues} regions={regions}/>
+						<Regions popularity={popularity} users={users} />
         				</div>
-
+						<h3 className="latest-registration-users3">Yearly checkout</h3>
 	<div className="area-chart-container" on>
-	<h3 className="latest-registration-users3">Yearly checkout</h3>
-      <Line data={Dataa} options={optionss} />
+
+      <Line data={Dataa} options={optionss}  />
     </div>
-	<MapComponent/>
 		<Footer/>
-      			</section>
-      			<header className="header">
+		{/* <MapComponent /> */}
+
+
+      			{/* <header className="header">
 				  <div className="dropdown">
 <div class="dropdown">
   <button class="dropbtn"><FaUserCircle className="profile-child_drop"  /> Profile</button>
@@ -379,9 +393,9 @@ console.log("regions",regions);
   </div>
 </div>
 
-
         				</div>
-      			</header>
+      			</header> */}
+				</section>
     		</div>
         );
 };

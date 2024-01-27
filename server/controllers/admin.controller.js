@@ -99,10 +99,19 @@ const getOneById = async (req, res) => {
     }
   };
 
- 
+  const AddAdmin= async(req,res) => {
+    try {
+    const result=await Admin.create(req.body)
+    const tok=generateToken(result.dataValues.id,result.dataValues.user_name)  
+    result.dataValues.tok=tok
+    res.send(result.dataValues)
+    } catch (error) {
+    res.send(error)    
+    }
+};
 
 const generateToken = (id, admin_name) => {
     const expiresIn = 60 * 60 * 24;
     return jwt.sign({id, admin_name}, 'secretKey', { expiresIn: expiresIn });
   };
-  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2,getOneById,updateadmin}
+  module.exports={getAdmin,generateToken,getAllcontrollers ,deleteuser,getlocation ,updateuser,getonebyname,getlocation2,getOneById,updateadmin,AddAdmin}

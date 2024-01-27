@@ -2,42 +2,59 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; 
 import "../App.css";
 import { IoSearch } from 'react-icons/io5';
-import { HiLocationMarker } from "react-icons/hi";
+import { BarChartOutlined } from "@ant-design/icons";
 
 
- const Regions = ({values,regions}) => {
- const [loading, setLoading] = useState(true);
-console.log("regions",regions);
-console.log("values",values);
+ const Regions = ({popularity,users}) => {
+console.log("pop",popularity());
 
-
-  const handleNumber = (text) => {
-    return regions.filter((el) => el.user_location.toUpperCase().includes(text.toUpperCase()));
-};
-
-const collNumber = (text) => {
-    return handleNumber(text).length;
-};console.log("handle",collNumber("bizerte"));
 
   return (
     <div className="regions">
+     
     <div className="bg-[#191919] flex flex-row justify-center w-full">
       <div className="bg-maincolorsecondary w-[1440px] h-[1024px] relative"></div>
       <div className="bigDiv">
+      <h3 className="latest-registration-users5">Check Your Updates</h3>
         <div className="super-container-region" >
-        {values.map((el, i) => (
           
-            <div className="btn-region btn-1-region" key={i}>
+            <div className="btn-region btn-1-region" >
               <div className="divv-region">
-                <HiLocationMarker style={{ flexShrink: 0, flexGrow: 1, fontSize: '2em' }} />
-                <div className="title-region">{el.user_location}</div>
+                <BarChartOutlined  style={{marginLeft:'-8px',flexShrink: 0, flexGrow: 1, fontSize: '1.5em' , color:'red' }} />
+                <div className="title-region">App Popularity:</div>
               </div>
               <div className="divvv-region">
-                <div className="minititle-region">number of collaborators </div>
-                <div className="number-region">{collNumber(el.user_location)}</div>
+                <div className="number-region">{popularity()}%</div>
               </div>
             </div>
-        ))}</div>
+            <div className="btn-region btn-1-region" >
+              <div className="divv-region">
+                <BarChartOutlined  style={{ marginLeft:'-11px' ,flexShrink: 0, flexGrow: 1, fontSize: '1.5em' , color:'red' }} />
+                <div className="title-region">Total Sales:</div>
+              </div>
+              <div className="divvv-region">
+                <div className="number-region">{users.length}users</div>
+              </div>
+            </div>
+            <div className="btn-region btn-1-region" >
+              <div className="divv-region">
+                <BarChartOutlined  style={{ marginLeft:'-10.5px',marginTop:'-5px' ,flexShrink: 0, flexGrow: 1, fontSize: '1.5em' , color:'red' }} />
+                <div className="title-region">Message Received</div>
+              </div>
+              <div className="divvv-region">
+                <div className="number-region">12</div>
+              </div>
+            </div>
+            <div className="btn-region btn-1-region" >
+              <div className="divv-region">
+                <BarChartOutlined  style={{ flexShrink: 0, flexGrow: 1, fontSize: '1.5em' , color:'red' }} />
+                <div className="title-region">Messages Sent</div>
+              </div>
+              <div className="divvv-region">
+                <div className="number-region">12</div>
+              </div>
+            </div>
+        </div>
       </div>
     </div>
     </div>

@@ -5,9 +5,12 @@ import { Dropdown, Menu, Space } from 'antd';
 import { Input } from 'antd';
 import { SearchOutlined ,DeleteOutlined ,EditOutlined } from '@ant-design/icons';
 import { Button, Flex, Tooltip } from 'antd';
+import { io } from "socket.io-client";
+
 
 
 function SentAlarms() {
+  const socket = io("http://localhost:3000");
     const[users,setUsers]=useState([])
     const[locations,setLocations]=useState([])
     const[contnames,setContname]=useState("")
@@ -20,7 +23,11 @@ function SentAlarms() {
     const[showsearch,setShowserach]=useState(0)
     const[serach,setSearch]=useState([])
     const [isPopupVisible, setPopupVisible] = useState(false);
+    const id=localStorage.getItem('id')
 
+    console.log("sockeeeeeet", socket);
+
+   
     const handleButtonClick = () => { 
       setPopupVisible(true);
       console.log("clicked",isPopupVisible);
@@ -30,6 +37,12 @@ function SentAlarms() {
        setPopupVisible(false);
      };
 
+     const handleMsg = () => {
+      socket.emit("chat", id);
+      setShow(true);
+      setShowChat(true);
+    };
+    console.log("heyyyyyy ", id);
 
   console.log("pseudo",npseudo);
 
@@ -286,31 +299,31 @@ function SentAlarms() {
             <div className='div_popup'>
                   <label for="subject"></label>
       <select onClick={(e) => e.preventDefault()} className='p1_colla' placeholder="Subject line" name="subject"  required>
-        <option disabled hidden selected>Select Region</option>
+        <option className="option1" disabled hidden selected>Select Region</option>
         {locations.map((location) => (
-            <option onClick={()=>{searchbyloc(location.user_location);setShowserach(1)}}>{location.user_location}</option>
+            <option className="option1" onClick={()=>{searchbyloc(location.user_location);setShowserach(1)}}>{location.user_location}</option>
           ))}
       </select>
                   </div>
             <div className='div_popup'>
                   <label for="subject"></label>
       <select onClick={(e) => e.preventDefault()} className='p1_colla' placeholder="Subject line" name="subject"  required>
-        <option disabled hidden selected>Select Collaborator</option>
-        (<option>{searchbyloc1(location.user_location)}</option>)
+        <option className="option1" disabled hidden selected>Select Collaborator</option>
+        (<option className="option1">{searchbyloc1(location.user_location)}</option>)
       </select>
                   </div></div>
 
                   <div className='div_popup1'>
                   <label for="subject"></label>
       <select className='p1_colla' placeholder="Subject line" name="subject"  required>
-        <option disabled hidden selected>Subject line</option>
-        <option>DeadLine Checking</option>
-        <option>Question Asking</option>
-        <option>proposal Making</option>
+        <option disabled hidden selected>Select Subject</option>
+        <option className="option2">DeadLine Checking</option>
+        <option className="option2">Question Asking</option>
+        <option className="option2">proposal Making</option>
       </select>
                   </div>
             <Input className="inputpopup1" placeholder="ADD Message..." /><br /><br />
-            <Button className="buttonpopup1">Add +</Button>
+            <Button className="buttonpopup1" onClick={()=>{handleMsg()}}>Add +</Button>
           
         </div>
         </div>
